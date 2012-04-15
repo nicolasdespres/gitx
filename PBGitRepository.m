@@ -166,7 +166,7 @@ dispatch_queue_t PBGetWorkQueue() {
 
 	[self setFileURL:gitDirURL];
     if (![self workingDirectory]) { // If we couldn't find the working directory, assume it's the place we were opened from.
-        workingDirectory = [absoluteURL path];
+        _workingDirectory = [absoluteURL path] ;
     }
     
         
@@ -719,7 +719,7 @@ dispatch_queue_t PBGetWorkQueue() {
         refShortName = [ref branchName];
     }
     else if ([ref isRemoteBranch])
-    {
+{
         refShortName = [ref remoteBranchName];
     }
     
@@ -741,7 +741,7 @@ dispatch_queue_t PBGetWorkQueue() {
         return NO;
     }
     
-    int retValue = 1;
+	int retValue = 1;
     // Check remote refs/tags/ for ref
     NSArray *arguments = [NSArray arrayWithObjects:@"ls-remote", @"-t", remote, refShortName, nil];
     NSString *output = [self outputInWorkdirForArguments:arguments retValue:&retValue];
@@ -802,8 +802,8 @@ dispatch_queue_t PBGetWorkQueue() {
                     *result = completeResults;
                 }
                 
-                return YES;
-            }
+    return YES;
+}
             else
             {
                 if (oneResult)
@@ -923,14 +923,14 @@ dispatch_queue_t PBGetWorkQueue() {
 
 - (NSString *) workingDirectory
 {
-	if(!workingDirectory) {
+	if(!_workingDirectory) {
 		if ([self.fileURL.path hasSuffix:@"/.git"])
-			workingDirectory = [self.fileURL.path substringToIndex:[self.fileURL.path length] - 5];
+			_workingDirectory = [self.fileURL.path substringToIndex:[self.fileURL.path length] - 5];
 		else if ([[self outputForCommand:@"rev-parse --is-inside-work-tree"] isEqualToString:@"true"])
-			workingDirectory = [PBGitBinary path];
+			_workingDirectory = [PBGitBinary path];
 	}
 	
-	return workingDirectory;
+	return _workingDirectory;
 }
 
 #pragma mark Remotes
